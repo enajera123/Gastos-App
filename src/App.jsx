@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import NuevoPresupuesto from "./components/NuevoPresupuesto";
 import Filtro from "./components/Filtro";
@@ -13,6 +13,7 @@ function App() {
   const [modal, setModal] = useState(false);
   const [animarModal, setAnimarModal] = useState(false);
   const [gastos, setGastos] = useState([]);
+  const [gastoEditar, setGastoEditar] = useState({});
   function handleModal() {
     setModal(true);
     setTimeout(() => {
@@ -20,10 +21,32 @@ function App() {
     }, 500);
   }
   function guardarGasto(nuevoGasto) {
+    if (gastoEditar.id) {
+      const gastosActualizados = gastos.map((gasto) =>
+        gasto.id === gastoEditar.id ? nuevoGasto : gasto
+      );
+      setGastos(gastosActualizados);
+      return;
+    }
     nuevoGasto.id = generarId();
     nuevoGasto.fecha = Date.now();
     setGastos([...gastos, nuevoGasto]);
   }
+  function eliminarGasto(id) {
+    const respuesta = confirm("Seguro que desea eliminar este gasto?");
+    if (respuesta) {
+      const gastosActualizados = gastos.filter((gasto) => gasto.id != id);
+      setGastos(gastosActualizados);
+    }
+  }
+  useEffect(() => {
+    if (gastoEditar.id) {
+      setModal(true);
+      setTimeout(() => {
+        setAnimarModal(true);
+      }, 500);
+    }
+  }, [gastoEditar]);
   return (
     <div className={modal ? "fijar" : ""}>
       <Header
@@ -39,7 +62,13 @@ function App() {
         <>
           <main>
             <Filtro />
-            <ListadoGastos gastos={gastos} />
+            <ListadoGastos
+              gastos={gastos}
+              gastoEditar={gastoEditar}
+              setGastoEditar={setGastoEditar}
+              setModal={setModal}
+              eliminarGasto={eliminarGasto}
+            />
           </main>
           <div className="nuevo-gasto">
             <img src={imagenGasto} alt="Imagen gasto" onClick={handleModal} />
@@ -49,9 +78,11 @@ function App() {
       {modal && (
         <Modal
           setModal={setModal}
+          gastoEditar={gastoEditar}
           animarModal={animarModal}
           setAnimarModal={setAnimarModal}
           guardarGasto={guardarGasto}
+          setGastoEditar={setGastoEditar}
         />
       )}
     </div>

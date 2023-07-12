@@ -1,28 +1,50 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import cerrarModal from "./../img/cerrar.svg";
 import Mensaje from "./Mensaje";
 
-function Modal({ setModal, animarModal, setAnimarModal, guardarGasto }) {
+function Modal({
+  setModal,
+  animarModal,
+  setAnimarModal,
+  guardarGasto,
+  gastoEditar,
+  setGastoEditar
+}) {
   const [nombre, setNombre] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [categoria, setCategoria] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [id,setId] = useState("")
+  const [fecha,setFecha] = useState("")
+
+  useEffect(() => {
+    if (gastoEditar.id) {
+      setNombre(gastoEditar.nombre);
+      setCantidad(gastoEditar.cantidad);
+      setCategoria(gastoEditar.categoria);
+      setId(gastoEditar.id)
+      setFecha(gastoEditar.fecha)
+    }
+  }, [gastoEditar]);
   function cerrarModalHandle() {
     setAnimarModal(false);
     setTimeout(() => {
       setModal(false);
+      setGastoEditar({});
     }, 500);
+    
   }
   function handleSubmit(e) {
     e.preventDefault();
-    if ([nombre, cantidad, categoria].includes("")) {      
+    if ([nombre, cantidad, categoria].includes("")) {
       setMensaje("Todos los campos son obligatorios");
       setTimeout(() => {
         setMensaje("");
       }, 2000);
       return;
     }
-    guardarGasto({ nombre, cantidad, categoria });
+    guardarGasto({ nombre, cantidad, categoria, id, fecha });
     cerrarModalHandle();
   }
   return (
@@ -38,7 +60,7 @@ function Modal({ setModal, animarModal, setAnimarModal, guardarGasto }) {
         className={`formulario ${animarModal ? "animar" : ""}`}
         onSubmit={handleSubmit}
       >
-        <legend>Nuevo Gasto</legend>
+        <legend>{gastoEditar.id?"Editando Gasto":"Nuevo Gasto"}</legend>
         {mensaje && <Mensaje mensaje={mensaje} tipo="error" />}
         <div className="campo">
           <label htmlFor="nombreGasto">Nombre Gasto</label>
@@ -80,7 +102,7 @@ function Modal({ setModal, animarModal, setAnimarModal, guardarGasto }) {
             <option value="suscripciones">Suscripciones</option>
           </select>
         </div>
-        <input type="submit" value="Añadir Gasto" />
+        <input type="submit" value={gastoEditar.id?"Editar Gasto":"Añadir Gasto"} />
       </form>
     </div>
   );
