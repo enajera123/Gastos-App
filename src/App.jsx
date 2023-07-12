@@ -1,22 +1,57 @@
 import { useState, useEffect } from "react";
 import Header from "./components/Header";
-import NuevoPresupuesto from "./components/NuevoPresupuesto";
 import Filtro from "./components/Filtro";
 import Modal from "./components/Modal";
 import imagenGasto from "./img/nuevo-gasto.svg";
-import { formatearFecha, generarId } from "./helpers";
+import { generarId } from "./helpers";
 import ListadoGastos from "./components/ListadoGastos";
 
 function App() {
-  const [presupuesto, setPresupuesto] = useState(0);
+  const [presupuesto, setPresupuesto] = useState(
+    localStorage.getItem("presupuesto") ?? 0
+  );
   const [isValidPresupuesto, setIsValidPresupuesto] = useState(false);
   const [modal, setModal] = useState(false);
   const [animarModal, setAnimarModal] = useState(false);
-  const [gastos, setGastos] = useState([]);
+  const [gastos, setGastos] = useState(JSON.parse(localStorage.getItem("gastos")??"")??[]);
   const [gastoEditar, setGastoEditar] = useState({});
   const [filtro, setFiltro] = useState("");
   const [gastosFiltrados, setGastosFiltrados] = useState([]);
-  const [cambiaCategoria, setCambiaCategoria] = useState(false)
+  const [cambiaCategoria, setCambiaCategoria] = useState(false);
+
+  useEffect(() => {
+    if (gastoEditar.id) {
+      setModal(true);
+      setTimeout(() => {
+        setAnimarModal(true);
+      }, 500);
+    }
+  }, [gastoEditar]);
+  useEffect(() => {
+    if (filtro) {
+      const lista = gastos.filter((gasto) => gasto.categoria === filtro);
+      setGastosFiltrados(lista);
+      return;
+    }
+    setGastosFiltrados(gastos);
+  }, [filtro]);
+  useEffect(() => {
+    if (cambiaCategoria) {
+      setFiltro("");
+    }
+  }, [cambiaCategoria]);
+  useEffect(() => {
+    localStorage.setItem("presupuesto", presupuesto);
+  }, [presupuesto]);
+  useEffect(() => {
+    localStorage.setItem("gastos", JSON.stringify(gastos));
+  }, [gastos]);
+  useEffect(() => {
+    if (presupuesto > 0) {
+      setIsValidPresupuesto(true);
+    }
+    
+  }, []);
   function handleModal() {
     setModal(true);
     setTimeout(() => {
@@ -42,27 +77,7 @@ function App() {
       setGastos(gastosActualizados);
     }
   }
-  useEffect(() => {
-    if (gastoEditar.id) {
-      setModal(true);
-      setTimeout(() => {
-        setAnimarModal(true);
-      }, 500);
-    }
-  }, [gastoEditar]);
-  useEffect(() => {
-    if (filtro) {
-      const lista = gastos.filter((gasto) => gasto.categoria === filtro);
-      setGastosFiltrados(lista);
-      return;
-    }
-    setGastosFiltrados(gastos);
-  }, [filtro]);
-  useEffect(()=>{
-    if(cambiaCategoria){
-      setFiltro("")
-    }
-  },[cambiaCategoria])
+
   return (
     <div className={modal ? "fijar" : ""}>
       <Header

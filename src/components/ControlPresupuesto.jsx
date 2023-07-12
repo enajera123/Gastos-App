@@ -73,7 +73,6 @@ function ControlPresupuesto({
           <span>Gastado: </span>
           {transformarDinero.format(gastado)}
         </p>
-        
       </div>
     </div>
   );
