@@ -13,7 +13,7 @@ function App() {
   const [isValidPresupuesto, setIsValidPresupuesto] = useState(false);
   const [modal, setModal] = useState(false);
   const [animarModal, setAnimarModal] = useState(false);
-  const [gastos, setGastos] = useState(JSON.parse(localStorage.getItem("gastos")??"")??[]);
+  const [gastos, setGastos] = useState(localStorage.getItem("gastos")?JSON.parse(localStorage.getItem("gastos")):[]);
   const [gastoEditar, setGastoEditar] = useState({});
   const [filtro, setFiltro] = useState("");
   const [gastosFiltrados, setGastosFiltrados] = useState([]);
