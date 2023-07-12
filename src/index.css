@@ -145,8 +145,7 @@ header h1 {
   border-left: 5px solid #b91c1c;
   color: #b91c1c;
 }
-.alerta.success {
-}
+
 
 .contenedor {
   width: 90%;
@@ -198,13 +197,15 @@ header h1 {
 }
 
 .contenido-presupuesto {
-  width: 100%;
+    
+    width: 100%;
 }
 .contenido-presupuesto p {
   font-weight: 400;
   color: var(--gris-oscuro);
   font-size: 2.4rem;
   text-align: center;
+  
 }
 @media (min-width: 768px) {
   .contenido-presupuesto p {
@@ -218,6 +219,7 @@ header h1 {
 .contenido-presupuesto span {
   font-weight: 900;
   color: var(--azul);
+  
 }
 .reset-app {
   border: none;
@@ -255,6 +257,7 @@ main {
   font-weight: 900;
   color: var(--gris-oscuro);
 }
+
 .filtros select {
   flex: 1;
   padding: 1rem;
