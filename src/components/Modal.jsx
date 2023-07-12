@@ -9,31 +9,34 @@ function Modal({
   setAnimarModal,
   guardarGasto,
   gastoEditar,
-  setGastoEditar
+  setGastoEditar,
+  setCambiaCategoria
 }) {
   const [nombre, setNombre] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [categoria, setCategoria] = useState("");
   const [mensaje, setMensaje] = useState("");
-  const [id,setId] = useState("")
-  const [fecha,setFecha] = useState("")
+  const [id, setId] = useState("");
+  const [fecha, setFecha] = useState("");
 
   useEffect(() => {
     if (gastoEditar.id) {
       setNombre(gastoEditar.nombre);
       setCantidad(gastoEditar.cantidad);
       setCategoria(gastoEditar.categoria);
-      setId(gastoEditar.id)
-      setFecha(gastoEditar.fecha)
+      setId(gastoEditar.id);
+      setFecha(gastoEditar.fecha);
+      setCambiaCategoria(false)
     }
   }, [gastoEditar]);
+  
+  
   function cerrarModalHandle() {
     setAnimarModal(false);
     setTimeout(() => {
       setModal(false);
       setGastoEditar({});
     }, 500);
-    
   }
   function handleSubmit(e) {
     e.preventDefault();
@@ -60,7 +63,7 @@ function Modal({
         className={`formulario ${animarModal ? "animar" : ""}`}
         onSubmit={handleSubmit}
       >
-        <legend>{gastoEditar.id?"Editando Gasto":"Nuevo Gasto"}</legend>
+        <legend>{gastoEditar.id ? "Editando Gasto" : "Nuevo Gasto"}</legend>
         {mensaje && <Mensaje mensaje={mensaje} tipo="error" />}
         <div className="campo">
           <label htmlFor="nombreGasto">Nombre Gasto</label>
@@ -87,7 +90,8 @@ function Modal({
           <select
             id="filtrarGasto"
             value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
+            onChange={(e) => {setCategoria(e.target.value) 
+              setCambiaCategoria(true)}}
           >
             {" "}
             <option disabled value="">
@@ -102,7 +106,10 @@ function Modal({
             <option value="suscripciones">Suscripciones</option>
           </select>
         </div>
-        <input type="submit" value={gastoEditar.id?"Editar Gasto":"Añadir Gasto"} />
+        <input
+          type="submit"
+          value={gastoEditar.id ? "Editar Gasto" : "Añadir Gasto"}
+        />
       </form>
     </div>
   );

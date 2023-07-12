@@ -1,12 +1,16 @@
 import React from "react";
 
-function Filtro() {
+function Filtro({ filtro, setFiltro }) {
   return (
     <div className="filtros sombra contenedor">
       <form>
         <div className="campo">
           <label htmlFor="filtrarGasto">Filtrar Gastos</label>
-          <select id="filtrarGasto">
+          <select
+            id="filtrarGasto"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+          >
             <option value="">-- Todas las Categorias --</option>
             <option value="ahorro">Ahorro</option>
             <option value="comida">Comida</option>

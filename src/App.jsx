@@ -14,6 +14,9 @@ function App() {
   const [animarModal, setAnimarModal] = useState(false);
   const [gastos, setGastos] = useState([]);
   const [gastoEditar, setGastoEditar] = useState({});
+  const [filtro, setFiltro] = useState("");
+  const [gastosFiltrados, setGastosFiltrados] = useState([]);
+  const [cambiaCategoria, setCambiaCategoria] = useState(false)
   function handleModal() {
     setModal(true);
     setTimeout(() => {
@@ -47,6 +50,19 @@ function App() {
       }, 500);
     }
   }, [gastoEditar]);
+  useEffect(() => {
+    if (filtro) {
+      const lista = gastos.filter((gasto) => gasto.categoria === filtro);
+      setGastosFiltrados(lista);
+      return;
+    }
+    setGastosFiltrados(gastos);
+  }, [filtro]);
+  useEffect(()=>{
+    if(cambiaCategoria){
+      setFiltro("")
+    }
+  },[cambiaCategoria])
   return (
     <div className={modal ? "fijar" : ""}>
       <Header
@@ -61,13 +77,15 @@ function App() {
       {isValidPresupuesto && (
         <>
           <main>
-            <Filtro />
+            <Filtro filtro={filtro} setFiltro={setFiltro} />
             <ListadoGastos
               gastos={gastos}
+              gastosFiltrados={gastosFiltrados}
               gastoEditar={gastoEditar}
               setGastoEditar={setGastoEditar}
               setModal={setModal}
               eliminarGasto={eliminarGasto}
+              filtro={filtro}
             />
           </main>
           <div className="nuevo-gasto">
@@ -83,6 +101,7 @@ function App() {
           setAnimarModal={setAnimarModal}
           guardarGasto={guardarGasto}
           setGastoEditar={setGastoEditar}
+          setCambiaCategoria={setCambiaCategoria}
         />
       )}
     </div>
