@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 function ControlPresupuesto({
   presupuesto,
@@ -11,6 +13,7 @@ function ControlPresupuesto({
 }) {
   const [disponible, setDisponible] = useState(0);
   const [gastado, setGastado] = useState(0);
+  const [porcentaje, setPorcentaje] = useState(0);
 
   useEffect(() => {
     const total = gastos.reduce((total, gasto) => gasto.cantidad + total, 0);
@@ -20,6 +23,11 @@ function ControlPresupuesto({
   useEffect(() => {
     setDisponible(presupuesto - gastado);
   }, [gastado]);
+  useEffect(() => {
+    setTimeout(() => {
+      setPorcentaje(((disponible * 100) / presupuesto).toFixed(2));
+    }, 1000);
+  }, [disponible]);
 
   const transformarDinero = new Intl.NumberFormat("es-CR", {
     style: "currency",
@@ -36,7 +44,16 @@ function ControlPresupuesto({
 
   return (
     <div className="contenedor dos-columnas contenedor-presupuesto sombra">
-      <div>Grafica aqui</div>
+      <div>
+        <CircularProgressbar
+          value={disponible < 0 ? 100 : porcentaje}
+          text={disponible < 0 ? `100% Gastado` : `${porcentaje}% Disponible`}
+          styles={buildStyles({
+            textColor: disponible >= 0 ? "#5b9bf5" : "red",
+            pathColor: disponible >= 0 ? "#5b9bf5" : "red",
+          })}
+        />
+      </div>
       <div className="contenido-presupuesto">
         <input
           type="submit"
@@ -48,14 +65,15 @@ function ControlPresupuesto({
           <span>Presupuesto: </span>
           {transformarDinero.format(presupuesto)}
         </p>
+        <p className={disponible < 0 ? "contenido-presupuesto negativo" : ""}>
+          <span>Disponible: </span>
+          {transformarDinero.format(disponible)}
+        </p>
         <p>
           <span>Gastado: </span>
           {transformarDinero.format(gastado)}
         </p>
-        <p>
-          <span>Disponible: </span>
-          {transformarDinero.format(disponible)}
-        </p>
+        
       </div>
     </div>
   );
